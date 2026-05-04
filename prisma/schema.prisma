@@ -19,12 +19,14 @@ model Person {
 
 model User {
   id        Int      @id @default(autoincrement())
+  name      String   // Nome do usuário
   email     String   @unique
   password  String
   role      String   @default("USER") // ADMIN, STAFF, USER
-  status    String   @default("PENDENTE") // Status para aprovação manual
+  status    String   @default("PENDENTE") // PENDENTE, APROVADO, RECUSADO
   personId  Int
   person    Person   @relation(fields: [personId], references: [id])
+  logs      Log[]    // Relacionamento com Logs
   createdAt DateTime @default(now())
 }
 
@@ -34,25 +36,45 @@ model Transaction {
   amount           Float
   date             DateTime
   card             String   // NUBANK ou MERCADO_PAGO
-  isAssigned       Boolean  @default(false)
+  isAssigned       Boolean  @default(false) // Nenhuma transação é atribuída automaticamente
   assignedPersonId Int?
   assignedPerson   Person?  @relation(fields: [assignedPersonId], references: [id])
+  createdAt        DateTime @default(now())
 }
 
 model Debt {
-  id       Int    @id @default(autoincrement())
-  amount   Float
-  status   String @default("PENDENTE") // PAGO, PARCIAL
-  personId Int
-  person   Person @relation(fields: [personId], references: [id])
+  id        Int       @id @default(autoincrement())
+  amount    Float     // Valor total da dívida
+  remaining Float     // Valor restante para suportar pagamento parcial
+  status    String    @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
+  personId  Int
+  person    Person    @relation(fields: [personId], references: [id])
+  payments  Payment[] // Histórico de pagamentos
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  amount    Float    // Valor pago
+  date      DateTime @default(now())
+  debtId    Int
+  debt      Debt     @relation(fields: [debtId], references: [id])
+}
+
+model Log {
+  id        Int      @id @default(autoincrement())
+  action    String   // login, logout, criação, edição, exclusão, etc
+  details   String   // Descrição completa da ação
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 model Config {
-  id           Int    @id @default(1)
-  webhookUrl   String?
-  clientId     String?
-  clientSecret String?
-  itemId       String?
-  pixNubank    String?
-  pixMercado   String?
+  id           Int     @id @default(1)
+  webhookUrl   String? // URL do Discord
+  clientId     String? // Open Finance
+  clientSecret String? // Open Finance
+  itemId       String? // ItemId OBRIGATÓRIO após conexão
+  pixNubank    String? // Chave Pix Nubank
+  pixMercado   String? // Chave Pix Mercado Pago
 }
