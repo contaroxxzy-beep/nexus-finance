@@ -1,0 +1,5 @@
+body { background: #0a0a0a; color: #00ff88; font-family: sans-serif; }
+.container { padding: 20px; text-align: center; }
+.dashboard { display: flex; gap: 20px; justify-content: center; margin-top: 50px; }
+.card { background: #1a1a1a; padding: 20px; border: 1px solid #00ff88; border-radius: 10px; min-width: 200px; }
+h1 { letter-spacing: 5px; text-shadow: 0 0 10px #00ff88; }
