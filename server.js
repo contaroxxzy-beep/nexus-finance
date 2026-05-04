@@ -1,29 +1,27 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
+const path = require('path');
+
 const prisma = new PrismaClient();
 const app = express();
 
+app.use(express.json());
+app.use(express.static('public')); // Entrega os arquivos da pasta public
+
+// Rota principal: entrega o HTML
 app.get('/', (req, res) => {
-  res.send('<h1>Nexus Finance Online 24/7</h1><p>O sistema de Open Finance está operando.</p>');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Rota para testar se o banco de dados está lendo algo
-app.get('/status-banco', async (req, res) => {
-  try {
-    const teste = await prisma.$queryRaw`SELECT 1`;
-    res.json({ status: "Banco Conectado!", dados: teste });
-  } catch (error) {
-    res.status(500).json({ status: "Erro no banco", erro: error.message });
-  }
+// Rota de Teste de Banco (para matar o erro P1001 na nuvem)
+app.get('/api/status', async (req, res) => {
+    try {
+        await prisma.$connect();
+        res.json({ status: "Online", banco: "Conectado no Supabase" });
+    } catch (err) {
+        res.status(500).json({ status: "Erro", mensagem: err.message });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Nexus rodando na porta ${PORT}`);
-});
-
-app.use(express.static('public')); // Se o html estiver numa pasta 'public'
-// OU
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
+app.listen(PORT, () => console.log(`Nexus rodando na porta ${PORT}`));
