@@ -1,0 +1,58 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTA: A URL não vai aqui no Prisma 7, ela fica no prisma.config.ts
+}
+
+model Person {
+  id           Int           @id @default(autoincrement())
+  name         String
+  users        User[]
+  transactions Transaction[]
+  debts        Debt[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // ADMIN, STAFF, USER
+  status    String   @default("PENDENTE") // Status para aprovação manual
+  personId  Int
+  person    Person   @relation(fields: [personId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id               Int      @id @default(autoincrement())
+  description      String
+  amount           Float
+  date             DateTime
+  card             String   // NUBANK ou MERCADO_PAGO
+  isAssigned       Boolean  @default(false)
+  assignedPersonId Int?
+  assignedPerson   Person?  @relation(fields: [assignedPersonId], references: [id])
+}
+
+model Debt {
+  id       Int    @id @default(autoincrement())
+  amount   Float
+  status   String @default("PENDENTE") // PAGO, PARCIAL
+  personId Int
+  person   Person @relation(fields: [personId], references: [id])
+}
+
+model Config {
+  id           Int    @id @default(1)
+  webhookUrl   String?
+  clientId     String?
+  clientSecret String?
+  itemId       String?
+  pixNubank    String?
+  pixMercado   String?
+}
