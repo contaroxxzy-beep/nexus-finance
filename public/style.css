@@ -1,5 +1,94 @@
-body { background: #0a0a0a; color: #00ff88; font-family: sans-serif; }
-.container { padding: 20px; text-align: center; }
-.dashboard { display: flex; gap: 20px; justify-content: center; margin-top: 50px; }
-.card { background: #1a1a1a; padding: 20px; border: 1px solid #00ff88; border-radius: 10px; min-width: 200px; }
-h1 { letter-spacing: 5px; text-shadow: 0 0 10px #00ff88; }
+:root {
+    --bg-color: #0c0c0c;
+    --card-bg: #1a1a1a;
+    --nubank-purple: #820ad1;
+    --mp-blue: #009ee3;
+    --text-primary: #ffffff;
+    --text-secondary: #aeaeae;
+    --accent: #111111;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body.dark-mode {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* Navbar Estilo Banco */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 5%;
+    background: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+}
+
+.logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -1px; }
+.logo span { color: var(--nubank-purple); }
+
+/* Grid de Cards Modernos */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px 5%;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 16px;
+    transition: transform 0.3s ease, border 0.3s ease;
+    border: 1px solid #222;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--nubank-purple);
+}
+
+.nubank { border-left: 5px solid var(--nubank-purple); }
+.mercadopago { border-left: 5px solid var(--mp-blue); }
+
+/* Pagamento por Pessoa (Cards) */
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 20px 5%;
+}
+
+.person-card {
+    background: var(--accent);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Botões com Feedback Visual */
+button {
+    background: var(--nubank-purple);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+button:active { filter: brightness(0.8); }
+
+/* Animações Suaves */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-container { animation: fadeIn 0.8s ease-out; }
