@@ -9,6 +9,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// --- PESSOAS E USUÁRIOS ---
+
 model Person {
   id           Int           @id @default(autoincrement())
   name         String
@@ -26,9 +28,11 @@ model User {
   status    String   @default("PENDENTE") // PENDENTE, APROVADO, RECUSADO
   personId  Int
   person    Person   @relation(fields: [personId], references: [id])
-  logs      Log[]    // Relacionamento com Logs
+  logs      Log[]    // Relacionamento para Logs Obrigatórios
   createdAt DateTime @default(now())
 }
+
+// --- FINANCEIRO ---
 
 model Transaction {
   id               Int      @id @default(autoincrement())
@@ -36,7 +40,7 @@ model Transaction {
   amount           Float
   date             DateTime
   card             String   // NUBANK ou MERCADO_PAGO
-  isAssigned       Boolean  @default(false) // Nenhuma transação é atribuída automaticamente
+  isAssigned       Boolean  @default(false) // REGRA: Nenhuma transação começa atribuída
   assignedPersonId Int?
   assignedPerson   Person?  @relation(fields: [assignedPersonId], references: [id])
   createdAt        DateTime @default(now())
@@ -44,26 +48,28 @@ model Transaction {
 
 model Debt {
   id        Int       @id @default(autoincrement())
-  amount    Float     // Valor total da dívida
-  remaining Float     // Valor restante para suportar pagamento parcial
+  amount    Float     // Valor original da dívida
+  remaining Float     // Valor restante para Pagamento Parcial
   status    String    @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
   personId  Int
   person    Person    @relation(fields: [personId], references: [id])
-  payments  Payment[] // Histórico de pagamentos
+  payments  Payment[] // Histórico de pagamentos parciais
 }
 
 model Payment {
   id        Int      @id @default(autoincrement())
-  amount    Float    // Valor pago
+  amount    Float    // Valor pago no momento
   date      DateTime @default(now())
   debtId    Int
   debt      Debt     @relation(fields: [debtId], references: [id])
 }
 
+// --- SISTEMA E AUDITORIA ---
+
 model Log {
   id        Int      @id @default(autoincrement())
-  action    String   // login, logout, criação, edição, exclusão, etc
-  details   String   // Descrição completa da ação
+  action    String   // login, logout, criação, sync, etc
+  details   String   // Detalhes da ação para auditoria
   userId    Int?
   user      User?    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
