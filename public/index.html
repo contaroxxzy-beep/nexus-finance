@@ -2,27 +2,62 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Finance | Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>NEXUS FINANCE</h1>
-            <p>Bem-vindo de volta, Logan.</p>
-        </header>
-        
-        <main class="dashboard">
-            <div class="card">
-                <h3>Saldo Total</h3>
-                <p id="saldo">R$ 0,00</p>
+<body class="dark-mode">
+    <nav class="navbar">
+        <div class="logo">NEXUS<span>FINANCE</span></div>
+        <div class="user-info">
+            <span id="user-role">ADMIN</span>
+            <button id="logout-btn">Sair</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <!-- Cards de Resumo -->
+        <section class="summary-grid">
+            <div class="card balance-card">
+                <p>Total em Dívidas</p>
+                <h2 id="total-debts">R$ 0,00</h2>
             </div>
-            <div class="card">
-                <h3>Status do Sistema</h3>
-                <p id="status">Verificando...</p>
+            <div class="card card-type nubank">
+                <p>Limite Nubank</p>
+                <h2 id="nubank-status">Sincronizado</h2>
             </div>
-        </main>
+            <div class="card card-type mercadopago">
+                <p>Mercado Pago</p>
+                <h2 id="mp-status">Aguardando</h2>
+            </div>
+        </section>
+
+        <!-- Seção de Pessoas (Interativo) -->
+        <section class="people-section">
+            <h3>Pagamento por Pessoa</h3>
+            <div id="people-list" class="people-grid">
+                <!-- Gerado via JS: Cards de pessoas conforme regra de pagamento por pessoa -->
+            </div>
+        </section>
+
+        <!-- Logs e Atividades (Obrigatório) -->
+        <section class="logs-section">
+            <h3>Logs de Auditoria</h3>
+            <div id="log-container" class="log-table">
+                <!-- Tabela de logs conforme regra de logs completos -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Pagamento (Estilo Nubank) -->
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-person-detail"></div>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="main.js"></script>
 </body>
 </html>
